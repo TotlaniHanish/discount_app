@@ -3,7 +3,7 @@ var router = express.Router();
 const db = require('../models');
 const { verifyToken } = require('../utils/jwtUtil');
 
-router.post('/shop/add', verifyToken, async (req, res) => {
+router.post('/add', verifyToken, async (req, res) => {
     try {
         const body = req.body;
         body.userId = req.userId;
@@ -36,7 +36,7 @@ router.post('/shop/add', verifyToken, async (req, res) => {
     }
 });
 
-router.put('shop/update/:id', verifyToken, async(req, res) => {
+router.put('/update/:id', verifyToken, async(req, res) => {
     try {
         const shop = await db.shop.update(req.body, {
             where: {

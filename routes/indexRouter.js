@@ -51,7 +51,8 @@ router.post('/login', async (req, res) => {
                 "statusCode": 200,
                 "msg": "Login successfull!!",
                 "data": {
-                    "token": token
+                    "token": token,
+                    "user": updateUser
                 }
             };
             return res.status(200).send(resp);
