@@ -52,7 +52,7 @@ router.post('/login', async (req, res) => {
                 "msg": "Login successfull!!",
                 "data": {
                     "token": token,
-                    "user": updateUser
+                    "user": userFromDB
                 }
             };
             return res.status(200).send(resp);

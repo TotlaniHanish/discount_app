@@ -15,9 +15,6 @@ exports.shop = (sequelize, Sequelize) => {
         userId: {
             type: Sequelize.BIGINT
         },
-        address: {
-            type: Sequelize.STRING
-        },
         city: {
             type: Sequelize.STRING
         }

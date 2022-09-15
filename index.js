@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 db.sequelize.sync();
 
 app.use('/', indexRouter);
-app.use('/shop', verifyToken, shopRouter);
+// app.use('/shop', verifyToken, shopRouter);
 
 app.listen(5000, function () {
     console.log('Node app is running on port 5000');
