@@ -3,7 +3,7 @@ var router = express.Router();
 const db = require('../models');
 const { verifyToken } = require('../utils/jwtUtil');
 
-router.post('/add', verifyToken, async (req, res) => {
+router.post('/add', async (req, res) => {
     try {
         const body = req.body;
         body.userId = req.userId;
@@ -20,7 +20,7 @@ router.post('/add', verifyToken, async (req, res) => {
         } else {
             return res.send(
                 {
-                    status: "error",
+                    status: "success",
                     statusCode: 400,
                     msg: "Can not add shop!!"
                 }
@@ -29,16 +29,21 @@ router.post('/add', verifyToken, async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.send({
-            status: "success",
+            status: "error",
             statusCode: 501,
             msg: "Something went wrong!!"
         });
     }
 });
 
-router.put('/update/:id', verifyToken, async(req, res) => {
+router.put('/update/:id', async(req, res) => {
     try {
-        const shop = await db.shop.update(req.body, {
+        await db.shop.update(req.body, {
+            where: {
+                id: req.params.id
+            }
+        });
+        const shop = await db.shop.findOne({
             where: {
                 id: req.params.id
             }
@@ -55,9 +60,44 @@ router.put('/update/:id', verifyToken, async(req, res) => {
         } else {
             return res.send(
                 {
-                    status: "error",
+                    status: "success",
                     statusCode: 400,
                     msg: "Can not be updated shop!!"
+                }
+            );
+        }
+    } catch (error) {
+        console.log(error);
+        return res.send({
+            status: "error",
+            statusCode: 501,
+            msg: "Something went wrong!!"
+        });
+    }
+});
+
+router.get('/get/:id', async(req, res) => {
+    try {
+        console.log(req.params.id);
+        const shop = await db.shop.findOne({
+            where: {
+                id: req.params.id
+            }
+        });
+        if (shop) {
+            return res.send(
+                {
+                    status: "success",
+                    statusCode: "201",
+                    data: shop
+                }
+            );
+        } else {
+            return res.send(
+                {
+                    status: "error",
+                    statusCode: 400,
+                    msg: "Shop not found!!"
                 }
             );
         }
@@ -70,3 +110,5 @@ router.put('/update/:id', verifyToken, async(req, res) => {
         });
     }
 });
+
+module.exports = router;
