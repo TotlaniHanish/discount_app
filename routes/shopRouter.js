@@ -36,9 +36,11 @@ router.post('/add', async (req, res) => {
     }
 });
 
-router.put('/update/:id', async(req, res) => {
+router.post('/update/:id', async(req, res) => {
     try {
-        await db.shop.update(req.body, {
+        const body = req.body;
+        body.userId = req.userId;
+        await db.shop.update(body, {
             where: {
                 id: req.params.id
             }
@@ -82,6 +84,41 @@ router.get('/get/:id', async(req, res) => {
         const shop = await db.shop.findOne({
             where: {
                 id: req.params.id
+            }
+        });
+        if (shop) {
+            return res.send(
+                {
+                    status: "success",
+                    statusCode: "201",
+                    data: shop
+                }
+            );
+        } else {
+            return res.send(
+                {
+                    status: "error",
+                    statusCode: 400,
+                    msg: "Shop not found!!"
+                }
+            );
+        }
+    } catch (error) {
+        console.log(error);
+        return res.send({
+            status: "success",
+            statusCode: 501,
+            msg: "Something went wrong!!"
+        });
+    }
+});
+
+router.get('/getShopByUserId', async(req, res) => {
+    try {
+        console.log(req.params.id);
+        const shop = await db.shop.findOne({
+            where: {
+                userId: req.userId
             }
         });
         if (shop) {
