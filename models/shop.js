@@ -6,9 +6,6 @@ exports.shop = (sequelize, Sequelize) => {
         address: {
             type: Sequelize.STRING
         },
-        fileId: {
-            type: Sequelize.STRING
-        },
         mobileNumber: {
             type: Sequelize.STRING
         },

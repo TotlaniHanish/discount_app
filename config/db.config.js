@@ -2,9 +2,9 @@ module.exports = {
 
     HOST: "localhost",
 
-    USER: "root",
+    USER: "allego",
 
-    PASSWORD: "welcome123",
+    PASSWORD: "allego",
 
     DB: "discount_app",
 
