@@ -2,6 +2,26 @@ var express = require('express');
 var router = express.Router();
 const db = require('../models');
 const { verifyToken } = require('../utils/jwtUtil');
+const multer = require('multer');
+const fs = require('fs');
+const path = require('path');
+const multerStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "public");
+    },
+    filename: (req, file, cb) => {
+        cb(null, `files/${file.originalname}`);
+        req.sendFileName = file.originalname;
+    },
+});
+
+const AWS = require('aws-sdk');
+const s3 = new AWS.S3({
+    accessKeyId: 'AKIAZ7YM37ILWJOFQ55G',
+    secretAccessKey: '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',
+});
+
+const upload = multer({ storage: multerStorage });
 
 router.post('/add', async (req, res) => {
     try {
@@ -36,7 +56,7 @@ router.post('/add', async (req, res) => {
     }
 });
 
-router.post('/update/:id', async(req, res) => {
+router.post('/update/:id', async (req, res) => {
     try {
         const body = req.body;
         body.userId = req.userId;
@@ -78,7 +98,7 @@ router.post('/update/:id', async(req, res) => {
     }
 });
 
-router.get('/get/:id', async(req, res) => {
+router.get('/get/:id', async (req, res) => {
     try {
         console.log(req.params.id);
         const shop = await db.shop.findOne({
@@ -113,7 +133,7 @@ router.get('/get/:id', async(req, res) => {
     }
 });
 
-router.get('/getShopByUserId', async(req, res) => {
+router.get('/getShopByUserId', async (req, res) => {
     try {
         console.log(req.params.id);
         const shop = await db.shop.findOne({
@@ -145,6 +165,48 @@ router.get('/getShopByUserId', async(req, res) => {
             statusCode: 501,
             msg: "Something went wrong!!"
         });
+    }
+});
+
+
+router.post('/imageUpload', upload.single('myFile'), async (req, res) => {
+
+    try {
+        console.log(req);
+        console.log("Inside upload image request!!");
+        const blob = fs.readFileSync(`public/files/${req.sendFileName}`);
+
+        const uploadedImage = s3.upload({
+            Bucket: 'nodejsappuse',
+            Key: req.sendFileName,
+            Body: blob,
+        }).promise();
+        var fileLocation;
+        uploadedImage.then(async (data) => {
+            console.log(data);
+            fileLocation = data.Location;
+            try {
+                await fs.unlinkSync(`public/files/${req.sendFileName}`);
+                console.log("File deleted!");
+            }
+            catch (error) {
+                console.log("Something went wrong while deleting the file...", error);
+            }
+            return res.json({
+                image: req.sendFileName,
+                location: fileLocation
+            });
+        });
+
+    } catch (error) {
+        console.log(error);
+        return res.send(
+            {
+                status: "error",
+                statusCode: 501,
+                msg: error.message
+            }
+        );
     }
 });
 
