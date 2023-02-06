@@ -3,6 +3,7 @@ const { user } = require('./user');
 const dbConfig = require("../config/db.config");
 const { shop } = require('./shop');
 const { file } = require('./file');
+const { category } = require('./category');
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
     host: dbConfig.HOST,
     dialect: dbConfig.dialect,
@@ -32,6 +33,7 @@ db.sequelize = sequelize;
 db.user = user(sequelize, Sequelize);
 db.shop = shop(sequelize, Sequelize);
 db.file = file(sequelize, Sequelize);
+db.category = category(sequelize, Sequelize);
 // db.party = party(sequelize, Sequelize);
 
 module.exports = db;

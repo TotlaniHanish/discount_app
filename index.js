@@ -8,6 +8,7 @@ var app = express();
 var indexRouter = require('./routes/indexRouter');
 var partyRouter = require('./routes/partyRouter');
 var shopRouter = require('./routes/shopRouter');
+var categoryRouter = require('./routes/categoryRouter');
 const { application } = require('express');
 const { verifyToken } = require('./utils/jwtUtil');
 
@@ -20,6 +21,7 @@ app.use(cors({
 
 db.sequelize.sync();
 app.use('/', indexRouter);
+app.use('/category', categoryRouter);
 app.use('/shop', verifyToken, shopRouter);
 
 app.listen(5000, function () {

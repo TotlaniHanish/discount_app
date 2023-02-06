@@ -17,8 +17,8 @@ const multerStorage = multer.diskStorage({
 
 const AWS = require('aws-sdk');
 const s3 = new AWS.S3({
-    accessKeyId: 'AKIAZ7YM37ILWJOFQ55G',
-    secretAccessKey: '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',
+    accessKeyId: 'AKIA2XHCJNMMHWVTSKHD',
+    secretAccessKey: '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',
 });
 
 const upload = multer({ storage: multerStorage });
@@ -177,8 +177,8 @@ router.post('/imageUpload', upload.single('myFile'), async (req, res) => {
         const blob = fs.readFileSync(`public/files/${req.sendFileName}`);
 
         const uploadedImage = s3.upload({
-            Bucket: 'nodejsappuse',
-            Key: req.sendFileName,
+            Bucket: 'discountappbucket',
+            Key: Date.now() + '.'+ req.sendFileName.split(".")[1],
             Body: blob,
         }).promise();
         var fileLocation;
@@ -192,11 +192,24 @@ router.post('/imageUpload', upload.single('myFile'), async (req, res) => {
             catch (error) {
                 console.log("Something went wrong while deleting the file...", error);
             }
-            return res.json({
-                image: req.sendFileName,
-                location: fileLocation
+            return res.send(
+                {
+                status: "success",
+                statusCode: "200",
+                data: {
+                    image: req.sendFileName,
+                    location: fileLocation
+                    }
             });
-        });
+        }).catch(error => {
+            console.log(error);
+            return res.send(
+            {
+                status: "error",
+                statusCode: 501,
+                msg: error.message
+            })
+        }) ;
 
     } catch (error) {
         console.log(error);

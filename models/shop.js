@@ -14,6 +14,12 @@ exports.shop = (sequelize, Sequelize) => {
         },
         city: {
             type: Sequelize.STRING
+        },
+        file: {
+            type: Sequelize.STRING
+        },
+        category: {
+            type: Sequelize.BIGINT
         }
     }, {
         indexes: [
