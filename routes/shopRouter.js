@@ -168,6 +168,41 @@ router.get('/getShopByUserId', async (req, res) => {
     }
 });
 
+router.get('/getShopByCategoryId/:id', async (req, res) => {
+    try {
+        console.log(req.params.id);
+        const shops = await db.shop.findAll({
+            where: {
+                category: req.params.id
+            }
+        });
+        if (shops) {
+            return res.send(
+                {
+                    status: "success",
+                    statusCode: "201",
+                    data: shops
+                }
+            );
+        } else {
+            return res.send(
+                {
+                    status: "error",
+                    statusCode: 400,
+                    msg: "Shop not found!!"
+                }
+            );
+        }
+    } catch (error) {
+        console.log(error);
+        return res.send({
+            status: "success",
+            statusCode: 501,
+            msg: "Something went wrong!!"
+        });
+    }
+});
+
 
 router.post('/imageUpload', upload.single('myFile'), async (req, res) => {
 
